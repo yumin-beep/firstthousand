@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FirstThousand</title>
+  <meta name="description" content="A launch brief for your indie game, where every claim cites the Qloo taste data behind it.">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-inner">
+      <a class="brand" href="/"><span class="mark" aria-hidden="true">1k</span> FirstThousand</a>
+      <nav class="top-links"><a href="#how">How it works</a><a href="https://github.com/" id="repo-link" target="_blank" rel="noopener">Code</a></nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="intro">
+      <h1>Who are your first 1,000 players, and where do you find them?</h1>
+      <p class="lede">Describe your game and name a few games like it. An agent reads Qloo's taste graph to find what that audience also loves (music, films, podcasts, brands, places) and writes a launch brief. Every sentence that names something cites the Qloo result it came from, and the app checks it.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="form-title">
+      <h2 id="form-title" class="sr-only">Your game</h2>
+      <form id="brief-form" autocomplete="off">
+        <label class="field">
+          <span>Your game in one or two sentences</span>
+          <textarea name="pitch" rows="3" maxlength="400" required placeholder="A cozy farming game on a floating island where the weather is your only neighbour."></textarea>
+        </label>
+        <fieldset class="field">
+          <legend>Games like it (1 to 3)</legend>
+          <div class="row3">
+            <input name="comp" maxlength="80" required placeholder="Stardew Valley" aria-label="Comparable game 1">
+            <input name="comp" maxlength="80" placeholder="A Short Hike" aria-label="Comparable game 2">
+            <input name="comp" maxlength="80" placeholder="Spiritfarer" aria-label="Comparable game 3">
+          </div>
+        </fieldset>
+        <label class="field narrow">
+          <span>Main market</span>
+          <select name="market">
+            <option>United States</option><option>United Kingdom</option><option>Canada</option><option>Germany</option>
+            <option>France</option><option>Japan</option><option>South Korea</option><option>Brazil</option><option>Australia</option>
+          </select>
+        </label>
+        <details class="field alt">
+          <summary>Torn between two directions? Compare them</summary>
+          <label class="field"><span>Name of the other direction</span><input name="alt_label" maxlength="60" placeholder="Darker, roguelike version"></label>
+          <div class="row3">
+            <input name="alt_comp" maxlength="80" placeholder="Hades" aria-label="Other direction game 1">
+            <input name="alt_comp" maxlength="80" placeholder="Dead Cells" aria-label="Other direction game 2">
+            <input name="alt_comp" maxlength="80" placeholder="" aria-label="Other direction game 3">
+          </div>
+        </details>
+        <div class="actions">
+          <button type="submit" class="primary" id="go">Write my launch brief</button>
+          <span class="hint" id="quota-hint"></span>
+        </div>
+      </form>
+      <div class="examples" id="examples" hidden>
+        <span>Or open a saved run:</span>
+        <div id="example-list" class="chips"></div>
+      </div>
+    </section>
+
+    <section id="progress" class="panel" hidden aria-live="polite">
+      <h2>Working</h2>
+      <ol class="stages" id="stages">
+        <li data-stage="research">Asking Qloo about your comparable games</li>
+        <li data-stage="followup">Following up where the data was thin</li>
+        <li data-stage="writing">Writing the brief from the evidence</li>
+        <li data-stage="baseline">Writing an LLM-only brief for comparison</li>
+      </ol>
+      <ul class="calls" id="calls"></ul>
+    </section>
+
+    <section id="error" class="panel error" hidden role="alert"></section>
+
+    <section id="result" hidden>
+      <div class="result-head">
+        <div>
+          <p class="kicker" id="result-kicker"></p>
+          <h2 id="brief-title"></h2>
+          <p id="brief-oneliner" class="lede"></p>
+        </div>
+      </div>
+      <div class="tabs" role="tablist">
+        <button role="tab" aria-selected="true" data-tab="grounded">With Qloo</button>
+        <button role="tab" aria-selected="false" data-tab="baseline">LLM only</button>
+        <button role="tab" aria-selected="false" data-tab="evidence">Evidence <span id="ev-count"></span></button>
+      </div>
+      <div class="tabpanel" id="tab-grounded"></div>
+      <div class="tabpanel" id="tab-baseline" hidden></div>
+      <div class="tabpanel" id="tab-evidence" hidden></div>
+    </section>
+
+    <section id="how" class="panel how">
+      <h2>How it works</h2>
+      <ol>
+        <li><b>Core research.</b> The agent resolves your comparable games in Qloo, pulls their taste tags, asks for cross-domain recommendations (music, films, podcasts, brands, TV), similar games, and where the audience is concentrated.</li>
+        <li><b>Follow-up.</b> A model reads that evidence and may make a few more Qloo calls where results were empty or vague.</li>
+        <li><b>Writing.</b> The model writes the brief as structured claims. Each claim lists the names it mentions and the evidence ids it relies on.</li>
+        <li><b>Checking.</b> Code, not the model, checks every named item against the cited Qloo results. Claims are marked <span class="pill grounded">grounded</span> <span class="pill partial">partial</span> <span class="pill ungrounded">not in evidence</span> or <span class="pill interpretation">interpretation</span>.</li>
+        <li><b>Comparison.</b> The same model writes a brief without Qloo. Its names are looked up in Qloo to show which ones exist at all.</li>
+      </ol>
+      <p class="fine">Qloo results describe aggregate taste affinities. They are not predictions about any person, and not sales forecasts.</p>
+    </section>
+  </main>
+
+  <dialog id="ev-dialog" aria-labelledby="ev-title">
+    <form method="dialog"><button class="close" aria-label="Close">×</button></form>
+    <div id="ev-body"></div>
+  </dialog>
+
+  <footer class="wrap foot">Built for the Qloo Agentic Hackathon. Uses the Qloo Insights API through the official Qloo harness.</footer>
+  <script src="/app.js" type="module"></script>
+</body>
+</html>
