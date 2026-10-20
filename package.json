@@ -4,10 +4,13 @@
   "description": "Launch-brief agent for indie games, grounded in the Qloo taste graph",
   "type": "module",
   "private": true,
-  "engines": { "node": ">=22.19.0" },
+  "engines": {
+    "node": ">=22.19.0"
+  },
   "scripts": {
     "start": "node src/server.js",
-    "test": "node --test test/*.test.js"
+    "test": "node --test test/*.test.js",
+    "coverage": "node scripts/coverage.js"
   },
   "dependencies": {
     "@google/genai": "2.30.0",

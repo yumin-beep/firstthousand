@@ -28,6 +28,7 @@ Requires Node.js 22.19 or newer.
 npm install
 QLOO_API_KEY=... GEMINI_API_KEY=... npm start   # http://localhost:8080
 npm test                                         # runs without keys
+QLOO_API_KEY=... npm run coverage                # which game titles Qloo resolves
 ```
 
 Environment variables:
@@ -35,6 +36,7 @@ Environment variables:
 | Name | Purpose | Default |
 |---|---|---|
 | `QLOO_API_KEY` | Qloo event credential, passed to `qloo mcp` | required for live runs |
+| `QLOO_BASE_URL` | Qloo API endpoint | `https://hackathon.api.qloo.com` |
 | `GEMINI_API_KEY` | Model for follow-up, writing and the LLM-only brief | required for live runs |
 | `GEMINI_MODEL` | Model id | `gemini-2.5-flash` |
 | `PER_IP_PER_HOUR` / `DAILY_CAP` | Live-run limits to protect the shared quota | 6 / 120 |

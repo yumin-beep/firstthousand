@@ -32,9 +32,13 @@ export function parseEnvelope(callResult) {
   }
 }
 
+// Hackathon keys are issued for this endpoint (per the key mail), not the production one.
+export const DEFAULT_BASE_URL = "https://hackathon.api.qloo.com";
+
 export class QlooMcp {
-  constructor({ apiKey, timeoutMs = 45000 } = {}) {
+  constructor({ apiKey, baseUrl = process.env.QLOO_BASE_URL || DEFAULT_BASE_URL, timeoutMs = 45000 } = {}) {
     this.apiKey = apiKey;
+    this.baseUrl = baseUrl;
     this.timeoutMs = timeoutMs;
     this.client = null;
     this.tools = [];
@@ -45,7 +49,8 @@ export class QlooMcp {
     const transport = new StdioClientTransport({
       command: process.execPath,
       args: [harnessBin(), "mcp"],
-      env: { ...process.env, QLOO_API_KEY: this.apiKey ?? "" },
+      // The harness accepts a non-production endpoint only when it is also named as trusted.
+      env: { ...process.env, QLOO_API_KEY: this.apiKey ?? "", QLOO_BASE_URL: this.baseUrl, QLOO_TRUSTED_BASE_URL: this.baseUrl },
       stderr: "ignore",
     });
     const client = new Client({ name: "firstthousand", version: "0.1.0" });
